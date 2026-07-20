@@ -898,6 +898,163 @@
     font-weight: 600;
   }
 
+  /* ── Password screen ── */
+  .pw-screen {
+    position: fixed;
+    inset: 0;
+    z-index: 500;
+    background: var(--bg);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem;
+  }
+
+  .pw-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--r);
+    padding: 2.4rem 2.2rem 2rem;
+    width: 100%;
+    max-width: 360px;
+    box-shadow: var(--shadow-lg);
+  }
+
+  .pw-logo {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-bottom: 1.8rem;
+  }
+
+  .pw-logo-ring {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    background: var(--accent);
+    color: #fff;
+    font-size: 0.75rem;
+    font-weight: 500;
+    flex-shrink: 0;
+  }
+
+  .pw-logo-name {
+    font-family: 'IBM Plex Sans', sans-serif;
+    font-size: 1.1rem;
+    font-weight: 500;
+    letter-spacing: -0.01em;
+  }
+
+  .pw-title {
+    font-size: 0.9rem;
+    font-weight: 500;
+    margin-bottom: 0.3rem;
+  }
+
+  .pw-sub {
+    font-size: 0.78rem;
+    color: var(--text-muted);
+    margin-bottom: 1.4rem;
+    line-height: 1.5;
+  }
+
+  .pw-input {
+    width: 100%;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    color: var(--text);
+    padding: 0.65rem 0.9rem;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.85rem;
+    border-radius: var(--r-sm);
+    outline: none;
+    transition: border-color 0.15s, box-shadow 0.15s;
+    margin-bottom: 0.8rem;
+  }
+
+  .pw-input:focus {
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 14%, transparent);
+  }
+
+  .pw-btn {
+    width: 100%;
+    background: var(--accent);
+    color: #fff;
+    border: none;
+    padding: 0.7rem;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.8rem;
+    font-weight: 500;
+    letter-spacing: 0.06em;
+    border-radius: var(--r-sm);
+    cursor: pointer;
+    transition: opacity 0.15s;
+    margin-bottom: 0.6rem;
+  }
+
+  .pw-btn:hover:not(:disabled) { opacity: 0.88; }
+  .pw-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+
+  .pw-error {
+    font-size: 0.75rem;
+    color: var(--err-fg);
+    font-family: 'IBM Plex Mono', monospace;
+    min-height: 1.2em;
+    text-align: center;
+  }
+
+  /* ── Export config section in settings ── */
+  .export-section {
+    margin-top: 1.4rem;
+    border-top: 1px solid var(--border);
+    padding-top: 1.2rem;
+  }
+
+  .export-title {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.68rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    margin-bottom: 0.8rem;
+  }
+
+  .export-blob {
+    width: 100%;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    color: var(--text-muted);
+    padding: 0.55rem 0.8rem;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.68rem;
+    border-radius: var(--r-sm);
+    resize: none;
+    height: 64px;
+    outline: none;
+    margin-top: 0.5rem;
+    cursor: text;
+  }
+
+  .btn-export {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    color: var(--text-muted);
+    padding: 0.5rem 1rem;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.72rem;
+    border-radius: var(--r-sm);
+    cursor: pointer;
+    transition: border-color 0.15s, color 0.15s;
+    width: 100%;
+    margin-bottom: 0.3rem;
+  }
+
+  .btn-export:hover { border-color: var(--accent); color: var(--accent); }
+
   /* ── Empty state ── */
   .empty-state {
     text-align: center;
@@ -1010,6 +1167,22 @@
   <button class="settings-btn" onclick="openSettings()">⚙ API klíče</button>
 </header>
 
+<!-- Password screen -->
+<div class="pw-screen" id="pwScreen" style="display:none">
+  <div class="pw-card">
+    <div class="pw-logo">
+      <span class="pw-logo-ring">AI</span>
+      <span class="pw-logo-name">Ring</span>
+    </div>
+    <div class="pw-title">Přístupové heslo</div>
+    <div class="pw-sub">Zadej heslo pro přístup k aplikaci.</div>
+    <input type="password" class="pw-input" id="pwInput" placeholder="Heslo..." autocomplete="current-password"
+      onkeydown="if(event.key==='Enter')unlockApp()">
+    <button class="pw-btn" id="pwBtn" onclick="unlockApp()">Vstoupit</button>
+    <div class="pw-error" id="pwError"></div>
+  </div>
+</div>
+
 <!-- Settings modal -->
 <div class="modal-overlay" id="settingsModal">
   <div class="modal">
@@ -1051,6 +1224,16 @@
     <div class="modal-actions">
       <button class="btn-save" onclick="saveKeys()">Uložit klíče</button>
       <button class="btn-cancel" onclick="closeSettings()">Zrušit</button>
+    </div>
+
+    <div class="export-section" id="exportSection">
+      <div class="export-title">Export šifrované konfigurace</div>
+      <div style="font-size:0.75rem;color:var(--text-muted);line-height:1.5;margin-bottom:0.8rem">
+        Zadej heslo + klíče výše → klikni Export → zkopíruj blob do konstanty <code style="font-size:0.7rem;background:var(--surface2);padding:0.1em 0.3em;border-radius:4px">ENCRYPTED_CONFIG</code> v source a nasaď.
+      </div>
+      <input type="password" class="pw-input" id="exportPwInput" placeholder="Heslo pro šifrování..." autocomplete="new-password" style="margin-bottom:0.5rem">
+      <button class="btn-export" onclick="exportConfig()">⬇ Exportovat konfiguraci</button>
+      <textarea class="export-blob" id="exportBlob" readonly placeholder="Blob se objeví zde..."></textarea>
     </div>
   </div>
 </div>
@@ -1110,11 +1293,109 @@
 </main>
 
 <script>
+  // --- Encrypted config (set this to enable password protection) ---
+  // Generate via Settings → "Export šifrované konfigurace", paste the blob here, redeploy.
+  const ENCRYPTED_CONFIG = 'KE0gH0rVcKwwfPXhNH5MIgXY68UdV75Qt4UvREmeO2s2/wLTZUPPvnEJ/BcIoHIvZy/Ow/T9c3aQ+6KTVc7Pvo0tQSykKN3+Kj2xBsmWBDVfl2UR6B5KcrmpwWFfaRkoQ1ziM7clf1oZRSz1+aTEh65LqEXcRoK+X9HjLPmRUhvmCIi53CRu9tvOm2xYLEoicySQkJYIj0VhTDRZJxy1PvjT0P6eQYpneNATnIkXCFG4tCXqdDwQ0/9j1GesnGBYpfUiAkMMLHW/MEPy6Cl+AcK3/voXa0AgkKZqjFxLGhrN07T7/x9CkGvLJYtVd2ujEQ45/6UB+oweoJ+IbqB9GfVDs6nsySqUmlJdFPJrUXxOsfd5e8fbQqGSkmHLoebrHLr2KIeTADzsS2v8H+5pwbSHgQMD0Q+iFdYbKEnHbaue2dACC3f157W1E8auVx8Ta0a9Tg3fwZQVmz22qR5gk3u2d+RcVVPPiYlwkPhJatS+ExYhX2JEv7uP+xdVFSdlK0Al57B/zR+fqEEr0TtuL2iOaQJJEhnSvGab/gK6hoxmr23tS4WFJYcSgBVbM9qp3NXlIt8=';
+
+  // --- Crypto helpers (AES-GCM + PBKDF2) ---
+  async function deriveKey(password, salt) {
+    const enc = new TextEncoder();
+    const keyMaterial = await crypto.subtle.importKey('raw', enc.encode(password), 'PBKDF2', false, ['deriveKey']);
+    return crypto.subtle.deriveKey(
+      { name: 'PBKDF2', salt, iterations: 200000, hash: 'SHA-256' },
+      keyMaterial,
+      { name: 'AES-GCM', length: 256 },
+      false,
+      ['encrypt', 'decrypt']
+    );
+  }
+
+  function b64ToBytes(b64) {
+    const bin = atob(b64);
+    return Uint8Array.from(bin, c => c.charCodeAt(0));
+  }
+
+  function bytesToB64(bytes) {
+    return btoa(String.fromCharCode(...bytes));
+  }
+
+  async function encryptConfig(password, keys) {
+    const salt = crypto.getRandomValues(new Uint8Array(16));
+    const iv   = crypto.getRandomValues(new Uint8Array(12));
+    const key  = await deriveKey(password, salt);
+    const enc  = new TextEncoder();
+    const ct   = await crypto.subtle.encrypt({ name: 'AES-GCM', iv }, key, enc.encode(JSON.stringify(keys)));
+    const blob = new Uint8Array(salt.length + iv.length + ct.byteLength);
+    blob.set(salt, 0);
+    blob.set(iv, 16);
+    blob.set(new Uint8Array(ct), 28);
+    return bytesToB64(blob);
+  }
+
+  async function decryptConfig(password, b64) {
+    const blob = b64ToBytes(b64);
+    const salt = blob.slice(0, 16);
+    const iv   = blob.slice(16, 28);
+    const ct   = blob.slice(28);
+    const key  = await deriveKey(password, salt);
+    const plain = await crypto.subtle.decrypt({ name: 'AES-GCM', iv }, key, ct);
+    return JSON.parse(new TextDecoder().decode(plain));
+  }
+
+  // --- Password gate ---
+  let _sessionKeys = null; // decrypted keys live only in memory
+
+  async function unlockApp() {
+    const pw = document.getElementById('pwInput').value;
+    const errEl = document.getElementById('pwError');
+    const btn = document.getElementById('pwBtn');
+    if (!pw) { errEl.textContent = 'Zadej heslo.'; return; }
+    btn.disabled = true;
+    btn.textContent = 'Dešifruji…';
+    errEl.textContent = '';
+    try {
+      _sessionKeys = await decryptConfig(pw, ENCRYPTED_CONFIG);
+      document.getElementById('pwScreen').style.display = 'none';
+      // Hide "API klíče" button — keys are baked in
+      document.querySelector('.settings-btn').style.display = 'none';
+      checkKeys();
+    } catch {
+      errEl.textContent = 'Špatné heslo.';
+      document.getElementById('pwInput').value = '';
+      document.getElementById('pwInput').focus();
+    } finally {
+      btn.disabled = false;
+      btn.textContent = 'Vstoupit';
+    }
+  }
+
+  async function exportConfig() {
+    const pw = document.getElementById('exportPwInput').value.trim();
+    if (!pw) { alert('Zadej heslo pro šifrování.'); return; }
+    const keys = {
+      anthropic: document.getElementById('keyAnthropic').value.trim(),
+      openai: document.getElementById('keyOpenAI').value.trim(),
+      gemini: document.getElementById('keyGemini').value.trim(),
+      brave: document.getElementById('keyBrave').value.trim()
+    };
+    if (!keys.anthropic && !keys.openai && !keys.gemini) {
+      alert('Zadej alespoň jeden API klíč.'); return;
+    }
+    const blob = await encryptConfig(pw, keys);
+    const el = document.getElementById('exportBlob');
+    el.value = blob;
+    el.select();
+    document.execCommand('copy');
+    el.style.borderColor = 'var(--ok-fg)';
+    setTimeout(() => el.style.borderColor = '', 1500);
+  }
+
   // --- State ---
   let history = JSON.parse(localStorage.getItem('agora_history') || '[]');
 
   // --- Keys ---
   function getKeys() {
+    if (_sessionKeys) return _sessionKeys;
     return {
       anthropic: localStorage.getItem('agora_key_anthropic') || '',
       openai: localStorage.getItem('agora_key_openai') || '',
@@ -1129,6 +1410,8 @@
     document.getElementById('keyOpenAI').value = keys.openai;
     document.getElementById('keyGemini').value = keys.gemini;
     document.getElementById('keyBrave').value = keys.brave;
+    // Show export section only when no blob is baked in (admin mode)
+    document.getElementById('exportSection').style.display = ENCRYPTED_CONFIG ? 'none' : '';
     document.getElementById('settingsModal').classList.add('active');
   }
 
@@ -1933,7 +2216,11 @@ Piš jako analytik, ne diplomat. Maximálně 250 slov. Bez markdown formátován
   }
 
   // --- Init ---
-  checkKeys();
+  if (ENCRYPTED_CONFIG) {
+    document.getElementById('pwScreen').style.display = 'flex';
+  } else {
+    checkKeys();
+  }
   renderHistory();
 
   // Close modal on overlay click
