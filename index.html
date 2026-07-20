@@ -586,7 +586,7 @@
     gap: 0.5rem;
     margin-bottom: 1rem;
     padding-bottom: 0.8rem;
-    border-bottom: 1px solid var(--border);
+    border-bottom: 1px solid color-mix(in srgb, var(--border) 50%, transparent);
   }
 
   .model-dot {
@@ -659,7 +659,7 @@
     gap: 0.6rem;
     margin-bottom: 1.1rem;
     padding-bottom: 0.9rem;
-    border-bottom: 1px solid var(--border);
+    border-bottom: 1px solid color-mix(in srgb, var(--border) 50%, transparent);
   }
 
   .section-icon {
@@ -678,6 +678,48 @@
     font-size: 0.72rem;
     letter-spacing: 0.08em;
     font-weight: 500;
+  }
+
+  /* ── Section collapsible ── */
+  .section-collapse-body {
+    position: relative;
+    overflow: hidden;
+    transition: max-height 0.4s ease;
+  }
+
+  .section-collapse-body.collapsed { max-height: 120px; }
+
+  .section-fade {
+    position: absolute;
+    bottom: 0; left: 0; right: 0;
+    height: 64px;
+    pointer-events: none;
+    transition: opacity 0.3s;
+  }
+
+  .section-toggle-btn {
+    display: flex;
+    align-items: center;
+    gap: 0.35rem;
+    margin: 0.7rem auto 0;
+    padding: 0.28em 0.9em;
+    border: 1px solid var(--border);
+    background: transparent;
+    color: var(--text-muted);
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.68rem;
+    letter-spacing: 0.06em;
+    border-radius: 20px;
+    cursor: pointer;
+    transition: border-color 0.15s, color 0.15s;
+    width: fit-content;
+  }
+
+  .section-toggle-btn:hover { border-color: var(--accent); color: var(--accent); }
+
+  .section-chevron {
+    transition: transform 0.3s ease;
+    display: inline-flex;
   }
 
   /* ── Synthesis ── */
@@ -702,7 +744,7 @@
     gap: 0.6rem;
     margin-bottom: 1rem;
     padding-bottom: 0.9rem;
-    border-bottom: 1px solid var(--border);
+    border-bottom: 1px solid color-mix(in srgb, var(--border) 50%, transparent);
   }
 
   .synthesis-icon {
@@ -747,7 +789,7 @@
     gap: 0.6rem;
     margin-bottom: 1.2rem;
     padding-bottom: 0.9rem;
-    border-bottom: 1px solid var(--border);
+    border-bottom: 1px solid color-mix(in srgb, var(--border) 50%, transparent);
   }
 
   .debate-icon { font-size: 0.85rem; color: #6A9ABF; }
@@ -803,7 +845,8 @@
   }
 
   .debate-verdict {
-    border-top: 1px solid var(--border);
+    border-top: 1px solid color-mix(in srgb, var(--border) 50%, transparent);
+    margin-top: 1rem;
     padding-top: 1.1rem;
   }
 
@@ -857,7 +900,7 @@
   .verdict-summary {
     margin-top: 0.9rem;
     padding-top: 0.7rem;
-    border-top: 1px solid var(--border);
+    border-top: 1px solid color-mix(in srgb, var(--border) 50%, transparent);
     font-size: 0.875rem;
     line-height: 1.75;
     color: var(--text);
@@ -1101,7 +1144,7 @@
   /* ── History ── */
   .history-section {
     margin-top: 3.5rem;
-    border-top: 1px solid var(--border);
+    border-top: 1px solid color-mix(in srgb, var(--border) 50%, transparent);
     padding-top: 1.8rem;
   }
 
@@ -1116,7 +1159,7 @@
 
   .history-item {
     padding: 0.7rem 0;
-    border-bottom: 1px solid var(--border);
+    border-bottom: 1px solid color-mix(in srgb, var(--border) 50%, transparent);
     cursor: pointer;
     display: flex;
     align-items: baseline;
@@ -1222,7 +1265,7 @@
     Ring
   </div>
   <div class="tagline">Tři hlasy, jedna otázka</div>
-  <div class="tagline" style="opacity:0.5">v0.3.0</div>
+  <div class="tagline" style="opacity:0.5">v0.4.0</div>
   <button class="theme-btn" id="themeBtn" onclick="toggleTheme()" title="Přepnout téma" style="margin-left:auto">
     <svg id="themeIconMoon" xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
     <svg id="themeIconSun" xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:none"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
@@ -1883,6 +1926,33 @@ Piš jako analytik, ne diplomat. Maximálně 250 slov. Bez markdown formátován
       + (summary ? `<div class="verdict-summary">${parseMarkdown(summary)}</div>` : '');
   }
 
+  // --- Section toggle (synthesis, debate) ---
+  function toggleSection(id) {
+    const body     = document.getElementById('sbody_' + id);
+    const fade     = document.getElementById('sfade_' + id);
+    const chevron  = document.getElementById('schevron_' + id);
+    const label    = document.getElementById('slabel_' + id);
+    if (!body) return;
+    const collapsed = body.classList.contains('collapsed');
+    if (collapsed) {
+      body.style.maxHeight = body.scrollHeight + 'px';
+      body.classList.remove('collapsed');
+      if (fade) fade.style.opacity = '0';
+      if (chevron) chevron.style.transform = 'rotate(180deg)';
+      if (label) label.textContent = 'Skrýt';
+      body.addEventListener('transitionend', () => {
+        if (!body.classList.contains('collapsed')) body.style.maxHeight = 'none';
+      }, { once: true });
+    } else {
+      body.style.maxHeight = body.scrollHeight + 'px';
+      requestAnimationFrame(() => { body.style.maxHeight = '120px'; });
+      body.classList.add('collapsed');
+      if (fade) fade.style.opacity = '1';
+      if (chevron) chevron.style.transform = '';
+      if (label) label.textContent = 'Zobrazit více';
+    }
+  }
+
   // --- Card toggle ---
   function toggleCard(id) {
     const body = document.getElementById('body_' + id);
@@ -2013,7 +2083,16 @@ Piš jako analytik, ne diplomat. Maximálně 250 slov. Bez markdown formátován
           <span class="synthesis-icon">§</span>
           <span class="synthesis-label">Syntéza a kritika</span>
         </div>
-        <div class="synthesis-text" id="text_synthesis">${skeletonHTML()}</div>
+        <div class="section-collapse-body collapsed" id="sbody_synthesis">
+          <div class="synthesis-text" id="text_synthesis">${skeletonHTML()}</div>
+          <div class="section-fade" id="sfade_synthesis" style="background:linear-gradient(to bottom,transparent,var(--surface))"></div>
+        </div>
+        <button class="section-toggle-btn" id="stoggle_synthesis" onclick="toggleSection('synthesis')">
+          <span class="section-chevron" id="schevron_synthesis">
+            <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+          </span>
+          <span id="slabel_synthesis">Zobrazit více</span>
+        </button>
       </div>
       <div class="debate-card" id="debateCard">
         <div class="debate-header">
@@ -2021,20 +2100,29 @@ Piš jako analytik, ne diplomat. Maximálně 250 slov. Bez markdown formátován
           <span class="debate-label">Křížový výslech — Kolo 2: Obhajoby</span>
         </div>
         <div class="debate-round-label">Každý model obhajuje svá tvrzení</div>
-        <div class="debate-entries">
-          <div class="debate-entry">
-            <div class="debate-entry-model" style="color:var(--claude)">Claude</div>
-            <div class="debate-entry-text" id="text_defense_claude">${skeletonHTML()}</div>
+        <div class="section-collapse-body collapsed" id="sbody_debate">
+          <div class="debate-entries">
+            <div class="debate-entry">
+              <div class="debate-entry-model" style="color:var(--claude)">Claude</div>
+              <div class="debate-entry-text" id="text_defense_claude">${skeletonHTML()}</div>
+            </div>
+            <div class="debate-entry">
+              <div class="debate-entry-model" style="color:var(--gpt)">GPT-4o</div>
+              <div class="debate-entry-text" id="text_defense_gpt">${skeletonHTML()}</div>
+            </div>
+            <div class="debate-entry">
+              <div class="debate-entry-model" style="color:var(--gemini)">Gemini</div>
+              <div class="debate-entry-text" id="text_defense_gemini">${skeletonHTML()}</div>
+            </div>
           </div>
-          <div class="debate-entry">
-            <div class="debate-entry-model" style="color:var(--gpt)">GPT-4o</div>
-            <div class="debate-entry-text" id="text_defense_gpt">${skeletonHTML()}</div>
-          </div>
-          <div class="debate-entry">
-            <div class="debate-entry-model" style="color:var(--gemini)">Gemini</div>
-            <div class="debate-entry-text" id="text_defense_gemini">${skeletonHTML()}</div>
-          </div>
+          <div class="section-fade" id="sfade_debate" style="background:linear-gradient(to bottom,transparent,var(--surface))"></div>
         </div>
+        <button class="section-toggle-btn" id="stoggle_debate" onclick="toggleSection('debate')">
+          <span class="section-chevron" id="schevron_debate">
+            <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+          </span>
+          <span id="slabel_debate">Zobrazit více</span>
+        </button>
         <div class="debate-verdict">
           <div class="debate-verdict-label">Verdikt soudce</div>
           <div class="debate-verdict-text" id="text_judge">${skeletonHTML()}</div>
