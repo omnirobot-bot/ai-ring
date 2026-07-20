@@ -3,101 +3,180 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>AI Agora</title>
-<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<title>AI Ring</title>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@300;400;500&display=swap" rel="stylesheet">
 <style>
+  /* ── Token system ── */
   :root {
-    --bg: #0e0e0e;
-    --surface: #161616;
-    --surface2: #1e1e1e;
-    --border: #2a2a2a;
-    --text: #e8e4dc;
-    --text-muted: #6b6b6b;
-    --claude: #c8a96e;
-    --gpt: #74b3a7;
-    --gemini: #a889c8;
-    --synthesis: #e8e4dc;
-    --accent: #c8a96e;
+    --bg:       #F5F4F0;
+    --surface:  #FFFFFF;
+    --surface2: #EDECEA;
+    --border:   #D8D5CF;
+    --text:     #14120A;
+    --text-muted: #6A6760;
+
+    --claude:  #A85418;
+    --gpt:     #1E7A54;
+    --gemini:  #523898;
+    --brave-c: #BC3C0C;
+    --accent:  #A85418;
+
+    --ok-bg:   #E6F4EC; --ok-fg:   #145E38;
+    --err-bg:  #FCEAEA; --err-fg:  #A82828;
+    --warn-bg: #FAF1E2; --warn-fg: #7A4C0C;
+    --info-bg: #ECEAFA; --info-fg: #42308E;
+    --brave-bg:#FCEEE6; --brave-fg:#A83408;
+
+    --shadow-sm: 0 1px 3px rgba(22,20,14,.07);
+    --shadow-md: 0 3px 10px rgba(22,20,14,.08), 0 1px 3px rgba(22,20,14,.05);
+    --shadow-lg: 0 8px 28px rgba(22,20,14,.10), 0 2px 8px rgba(22,20,14,.05);
+
+    --r: 12px;
+    --r-sm: 8px;
   }
 
-  * { margin: 0; padding: 0; box-sizing: border-box; }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg:       #141310;
+      --surface:  #1E1C18;
+      --surface2: #272420;
+      --border:   #343028;
+      --text:     #EAE6DC;
+      --text-muted: #706C62;
+
+      --claude:  #D08844;
+      --gpt:     #5CB896;
+      --gemini:  #9A7CD4;
+      --brave-c: #E06840;
+      --accent:  #D08844;
+
+      --ok-bg:   #162A1E; --ok-fg:   #6BAE7C;
+      --err-bg:  #2A1616; --err-fg:  #C87474;
+      --warn-bg: #261E10; --warn-fg: #C8A060;
+      --info-bg: #181626; --info-fg: #8080C8;
+      --brave-bg:#261408; --brave-fg:#E06030;
+
+      --shadow-sm: 0 1px 3px rgba(0,0,0,.25);
+      --shadow-md: 0 3px 10px rgba(0,0,0,.30), 0 1px 3px rgba(0,0,0,.18);
+      --shadow-lg: 0 8px 28px rgba(0,0,0,.38), 0 2px 8px rgba(0,0,0,.22);
+    }
+  }
+
+  :root[data-theme="light"] {
+    --bg:#F5F4F0;--surface:#FFFFFF;--surface2:#EDECEA;--border:#D8D5CF;
+    --text:#14120A;--text-muted:#6A6760;
+    --claude:#A85418;--gpt:#1E7A54;--gemini:#523898;--brave-c:#BC3C0C;--accent:#A85418;
+    --ok-bg:#E6F4EC;--ok-fg:#145E38;--err-bg:#FCEAEA;--err-fg:#A82828;
+    --warn-bg:#FAF1E2;--warn-fg:#7A4C0C;--info-bg:#ECEAFA;--info-fg:#42308E;
+    --brave-bg:#FCEEE6;--brave-fg:#A83408;
+    --shadow-sm:0 1px 3px rgba(22,20,14,.07);
+    --shadow-md:0 3px 10px rgba(22,20,14,.08),0 1px 3px rgba(22,20,14,.05);
+    --shadow-lg:0 8px 28px rgba(22,20,14,.10),0 2px 8px rgba(22,20,14,.05);
+  }
+
+  :root[data-theme="dark"] {
+    --bg:#141310;--surface:#1E1C18;--surface2:#272420;--border:#343028;
+    --text:#EAE6DC;--text-muted:#706C62;
+    --claude:#D08844;--gpt:#5CB896;--gemini:#9A7CD4;--brave-c:#E06840;--accent:#D08844;
+    --ok-bg:#162A1E;--ok-fg:#6BAE7C;--err-bg:#2A1616;--err-fg:#C87474;
+    --warn-bg:#261E10;--warn-fg:#C8A060;--info-bg:#181626;--info-fg:#8080C8;
+    --brave-bg:#261408;--brave-fg:#E06030;
+    --shadow-sm:0 1px 3px rgba(0,0,0,.25);
+    --shadow-md:0 3px 10px rgba(0,0,0,.30),0 1px 3px rgba(0,0,0,.18);
+    --shadow-lg:0 8px 28px rgba(0,0,0,.38),0 2px 8px rgba(0,0,0,.22);
+  }
+
+  /* ── Reset ── */
+  *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
 
   body {
     background: var(--bg);
     color: var(--text);
-    font-family: 'IBM Plex Sans', sans-serif;
+    font-family: 'IBM Plex Sans', system-ui, sans-serif;
     font-weight: 300;
     min-height: 100vh;
     overflow-x: hidden;
+    -webkit-font-smoothing: antialiased;
   }
 
-  /* Noise overlay */
-  body::before {
-    content: '';
-    position: fixed;
-    inset: 0;
-    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
-    pointer-events: none;
-    z-index: 999;
-    opacity: 0.4;
-  }
-
+  /* ── Header ── */
   header {
-    padding: 2rem 3rem 1.5rem;
+    position: sticky;
+    top: 0;
+    z-index: 50;
+    padding: 0 2.5rem;
+    height: 58px;
+    background: var(--surface);
     border-bottom: 1px solid var(--border);
     display: flex;
-    align-items: baseline;
-    gap: 1.5rem;
+    align-items: center;
+    gap: 1.2rem;
+    box-shadow: var(--shadow-sm);
   }
 
   .logo {
-    font-family: 'Playfair Display', serif;
-    font-size: 1.8rem;
-    letter-spacing: -0.02em;
+    font-family: 'IBM Plex Sans', sans-serif;
+    font-size: 1.1rem;
+    font-weight: 500;
+    letter-spacing: -0.01em;
     color: var(--text);
+    display: flex;
+    align-items: center;
+    gap: 0.45rem;
   }
 
-  .logo span {
-    color: var(--accent);
-    font-style: italic;
+  .logo-ring {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 26px;
+    height: 26px;
+    border-radius: 50%;
+    background: var(--accent);
+    color: #fff;
+    font-size: 0.75rem;
+    font-weight: 500;
+    letter-spacing: 0;
+    flex-shrink: 0;
   }
 
   .tagline {
-    font-size: 0.75rem;
+    font-size: 0.72rem;
     color: var(--text-muted);
-    letter-spacing: 0.12em;
-    text-transform: uppercase;
+    letter-spacing: 0.06em;
     font-family: 'IBM Plex Mono', monospace;
   }
 
   .settings-btn {
     margin-left: auto;
-    background: none;
+    background: var(--surface2);
     border: 1px solid var(--border);
     color: var(--text-muted);
-    padding: 0.4rem 1rem;
+    padding: 0.38rem 0.9rem;
     font-family: 'IBM Plex Mono', monospace;
-    font-size: 0.75rem;
+    font-size: 0.72rem;
+    border-radius: var(--r-sm);
     cursor: pointer;
-    letter-spacing: 0.08em;
-    transition: all 0.2s;
+    letter-spacing: 0.05em;
+    transition: background 0.15s, border-color 0.15s, color 0.15s;
   }
 
   .settings-btn:hover {
+    background: var(--surface);
     border-color: var(--accent);
     color: var(--accent);
   }
 
-  /* Settings modal */
+  /* ── Modal ── */
   .modal-overlay {
     display: none;
     position: fixed;
     inset: 0;
-    background: rgba(0,0,0,0.8);
-    z-index: 100;
+    background: rgba(10,8,4,.55);
+    backdrop-filter: blur(6px);
+    z-index: 200;
     align-items: center;
     justify-content: center;
-    backdrop-filter: blur(4px);
   }
 
   .modal-overlay.active { display: flex; }
@@ -105,46 +184,43 @@
   .modal {
     background: var(--surface);
     border: 1px solid var(--border);
-    padding: 2.5rem;
+    border-radius: var(--r);
+    padding: 2rem 2rem 1.8rem;
     width: 90%;
-    max-width: 480px;
+    max-width: 460px;
+    box-shadow: var(--shadow-lg);
   }
 
   .modal h2 {
-    font-family: 'Playfair Display', serif;
-    font-size: 1.3rem;
-    margin-bottom: 0.5rem;
+    font-size: 1rem;
+    font-weight: 500;
+    margin-bottom: 0.4rem;
   }
 
   .modal p {
     font-size: 0.8rem;
     color: var(--text-muted);
-    margin-bottom: 2rem;
+    margin-bottom: 1.8rem;
     line-height: 1.6;
   }
 
-  .key-group {
-    margin-bottom: 1.5rem;
-  }
+  .key-group { margin-bottom: 1.1rem; }
 
   .key-label {
     font-family: 'IBM Plex Mono', monospace;
-    font-size: 0.7rem;
-    letter-spacing: 0.1em;
-    margin-bottom: 0.4rem;
+    font-size: 0.68rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    margin-bottom: 0.35rem;
     display: flex;
     align-items: center;
     gap: 0.5rem;
+    color: var(--text-muted);
   }
 
-  .key-dot {
-    width: 8px;
-    height: 8px;
-    border-radius: 50%;
-  }
-
+  .key-dot { width: 7px; height: 7px; border-radius: 50%; }
   .key-dot.claude { background: var(--claude); }
-  .key-dot.gpt { background: var(--gpt); }
+  .key-dot.gpt    { background: var(--gpt); }
   .key-dot.gemini { background: var(--gemini); }
 
   .key-input {
@@ -152,113 +228,174 @@
     background: var(--surface2);
     border: 1px solid var(--border);
     color: var(--text);
-    padding: 0.6rem 0.8rem;
+    padding: 0.55rem 0.8rem;
     font-family: 'IBM Plex Mono', monospace;
     font-size: 0.75rem;
+    border-radius: var(--r-sm);
     outline: none;
-    transition: border-color 0.2s;
+    transition: border-color 0.15s, box-shadow 0.15s;
   }
 
-  .key-input:focus { border-color: var(--accent); }
+  .key-input:focus {
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 14%, transparent);
+  }
+
   .key-input::placeholder { color: var(--text-muted); }
 
   .modal-actions {
     display: flex;
-    gap: 1rem;
-    margin-top: 2rem;
+    gap: 0.75rem;
+    margin-top: 1.6rem;
   }
 
   .btn-save {
     flex: 1;
     background: var(--accent);
-    color: #0e0e0e;
+    color: #fff;
     border: none;
-    padding: 0.7rem;
+    padding: 0.65rem;
     font-family: 'IBM Plex Mono', monospace;
-    font-size: 0.8rem;
+    font-size: 0.78rem;
     font-weight: 500;
-    letter-spacing: 0.08em;
+    letter-spacing: 0.06em;
+    border-radius: var(--r-sm);
     cursor: pointer;
-    transition: opacity 0.2s;
+    transition: opacity 0.15s;
   }
 
-  .btn-save:hover { opacity: 0.85; }
+  .btn-save:hover { opacity: 0.88; }
 
   .btn-cancel {
-    background: none;
+    background: var(--surface2);
     border: 1px solid var(--border);
     color: var(--text-muted);
-    padding: 0.7rem 1.5rem;
+    padding: 0.65rem 1.2rem;
     font-family: 'IBM Plex Mono', monospace;
-    font-size: 0.8rem;
+    font-size: 0.78rem;
+    border-radius: var(--r-sm);
     cursor: pointer;
-    transition: all 0.2s;
+    transition: border-color 0.15s, color 0.15s;
   }
 
   .btn-cancel:hover { border-color: var(--text-muted); color: var(--text); }
 
-  /* Main layout */
+  /* ── Main ── */
   main {
-    max-width: 1400px;
-    margin: 0 auto;
-    padding: 2rem 3rem 4rem;
+    max-width: 100%;
+    padding: 2.2rem 2.5rem 5rem;
   }
 
-  /* Query area */
-  .query-area {
-    margin-bottom: 3rem;
-    position: relative;
-  }
+  /* ── Query area ── */
+  .query-area { margin-bottom: 2.5rem; }
 
   .query-label {
     font-family: 'IBM Plex Mono', monospace;
-    font-size: 0.7rem;
-    letter-spacing: 0.15em;
+    font-size: 0.68rem;
+    letter-spacing: 0.12em;
     text-transform: uppercase;
     color: var(--text-muted);
-    margin-bottom: 0.8rem;
+    margin-bottom: 0.6rem;
   }
 
   .query-wrapper {
-    position: relative;
     display: flex;
-    gap: 0;
     border: 1px solid var(--border);
-    transition: border-color 0.2s;
+    border-radius: var(--r);
+    background: var(--surface);
+    box-shadow: var(--shadow-sm);
+    overflow: hidden;
+    transition: border-color 0.15s, box-shadow 0.15s;
   }
 
   .query-wrapper:focus-within {
     border-color: var(--accent);
+    box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 12%, transparent), var(--shadow-sm);
   }
 
   .query-input {
     flex: 1;
-    background: var(--surface);
+    background: transparent;
     border: none;
     color: var(--text);
     padding: 1rem 1.2rem;
     font-family: 'IBM Plex Sans', sans-serif;
-    font-size: 1rem;
+    font-size: 0.95rem;
     font-weight: 300;
     outline: none;
     resize: none;
     min-height: 80px;
-    line-height: 1.6;
+    line-height: 1.65;
   }
 
   .query-input::placeholder { color: var(--text-muted); }
 
+  .image-bar {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.5rem 1rem;
+    background: var(--surface2);
+    border-top: 1px solid var(--border);
+  }
+
+  .image-upload-btn {
+    background: none;
+    border: 1px solid var(--border);
+    color: var(--text-muted);
+    padding: 0.28em 0.75em;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.68rem;
+    letter-spacing: 0.05em;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: border-color 0.15s, color 0.15s;
+  }
+
+  .image-upload-btn:hover { border-color: var(--accent); color: var(--accent); }
+
+  .image-preview {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+  }
+
+  .image-preview img {
+    height: 36px;
+    width: auto;
+    border-radius: 6px;
+    border: 1px solid var(--border);
+    object-fit: cover;
+  }
+
+  .image-remove {
+    position: absolute;
+    top: -5px;
+    right: -5px;
+    background: #C87474;
+    color: #fff;
+    border: none;
+    border-radius: 50%;
+    width: 15px;
+    height: 15px;
+    font-size: 9px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
   .ask-btn {
     background: var(--accent);
-    color: #0e0e0e;
+    color: #fff;
     border: none;
-    padding: 0 2rem;
+    padding: 0 1.8rem;
     font-family: 'IBM Plex Mono', monospace;
-    font-size: 0.8rem;
+    font-size: 0.78rem;
     font-weight: 500;
-    letter-spacing: 0.1em;
+    letter-spacing: 0.08em;
     cursor: pointer;
-    transition: opacity 0.2s;
+    transition: opacity 0.15s;
     white-space: nowrap;
     align-self: stretch;
     display: flex;
@@ -266,20 +403,21 @@
     gap: 0.5rem;
   }
 
-  .ask-btn:hover:not(:disabled) { opacity: 0.85; }
-  .ask-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+  .ask-btn:hover:not(:disabled) { opacity: 0.87; }
+  .ask-btn:disabled { opacity: 0.38; cursor: not-allowed; }
 
-  /* Status bar */
+  /* ── Status bar ── */
   .status-bar {
     display: flex;
-    gap: 2rem;
-    margin-top: 1rem;
-    min-height: 1.2rem;
+    flex-wrap: wrap;
+    gap: 1rem 2rem;
+    margin-top: 0.75rem;
+    min-height: 1.1rem;
   }
 
   .status-item {
     font-family: 'IBM Plex Mono', monospace;
-    font-size: 0.7rem;
+    font-size: 0.68rem;
     display: flex;
     align-items: center;
     gap: 0.4rem;
@@ -291,35 +429,60 @@
     height: 6px;
     border-radius: 50%;
     background: var(--border);
+    flex-shrink: 0;
   }
 
-  .status-dot.loading {
-    animation: pulse 1s infinite;
-  }
-
-  .status-dot.done { background: #6b9e7a; }
-  .status-dot.error { background: #c87474; }
+  .status-dot.loading { animation: pulse 1s infinite; background: var(--accent); }
+  .status-dot.done    { background: var(--ok-fg); }
+  .status-dot.error   { background: var(--err-fg); }
 
   @keyframes pulse {
     0%, 100% { opacity: 0.3; }
-    50% { opacity: 1; }
+    50%       { opacity: 1; }
   }
 
-  /* Responses grid */
+  /* ── Loading queue ── */
+  .loading-queue {
+    display: flex;
+    gap: 0.4rem;
+    align-items: center;
+    padding: 0.75rem 1rem;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--r-sm);
+    margin-top: 0.75rem;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.68rem;
+    color: var(--text-muted);
+    letter-spacing: 0.06em;
+    box-shadow: var(--shadow-sm);
+  }
+
+  .queue-step { display: flex; align-items: center; gap: 0.25rem; opacity: 0.38; }
+  .queue-step.active { opacity: 1; color: var(--accent); }
+  .queue-step.done   { opacity: 0.55; color: var(--ok-fg); }
+  .queue-sep         { opacity: 0.25; }
+
+  /* ── Responses grid ── */
   .responses-grid {
     display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 1.5px;
-    margin-bottom: 1.5px;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1rem;
+    margin-bottom: 1rem;
   }
 
   .response-card {
     background: var(--surface);
-    padding: 1.8rem;
+    border: 1px solid var(--border);
+    border-radius: var(--r);
+    padding: 1.4rem 1.5rem;
+    box-shadow: var(--shadow-sm);
     opacity: 0;
-    transform: translateY(12px);
-    transition: opacity 0.4s, transform 0.4s;
+    transform: translateY(10px);
+    transition: opacity 0.35s, transform 0.35s, box-shadow 0.2s;
   }
+
+  .response-card:hover { box-shadow: var(--shadow-md); }
 
   .response-card.visible {
     opacity: 1;
@@ -329,166 +492,387 @@
   .card-header {
     display: flex;
     align-items: center;
-    gap: 0.6rem;
-    margin-bottom: 1.2rem;
-    padding-bottom: 1rem;
+    gap: 0.5rem;
+    margin-bottom: 1rem;
+    padding-bottom: 0.8rem;
     border-bottom: 1px solid var(--border);
   }
 
   .model-dot {
-    width: 10px;
-    height: 10px;
+    width: 8px;
+    height: 8px;
     border-radius: 50%;
     flex-shrink: 0;
   }
 
   .model-name {
     font-family: 'IBM Plex Mono', monospace;
-    font-size: 0.75rem;
-    letter-spacing: 0.08em;
+    font-size: 0.72rem;
+    letter-spacing: 0.06em;
     font-weight: 500;
   }
 
   .model-version {
-    font-size: 0.65rem;
+    font-size: 0.62rem;
     color: var(--text-muted);
     font-family: 'IBM Plex Mono', monospace;
     margin-left: auto;
   }
 
   .response-text {
-    font-size: 0.88rem;
+    font-size: 0.875rem;
     line-height: 1.75;
     color: var(--text);
     font-weight: 300;
-    min-height: 60px;
+    min-height: 56px;
   }
 
-  .response-text.loading-text {
-    color: var(--text-muted);
-  }
-
+  /* ── Skeleton ── */
   .skeleton {
     background: linear-gradient(90deg, var(--border) 25%, var(--surface2) 50%, var(--border) 75%);
     background-size: 200% 100%;
-    animation: shimmer 1.5s infinite;
-    height: 0.8em;
-    border-radius: 2px;
-    margin-bottom: 0.6em;
+    animation: shimmer 1.6s infinite;
+    height: 0.75em;
+    border-radius: 4px;
+    margin-bottom: 0.55em;
   }
 
-  .skeleton:last-child { width: 60%; }
+  .skeleton:last-child { width: 55%; }
 
   @keyframes shimmer {
-    0% { background-position: 200% 0; }
+    0%   { background-position: 200% 0; }
     100% { background-position: -200% 0; }
   }
 
-  /* Synthesis card */
-  .synthesis-card {
-    background: var(--surface2);
-    padding: 2rem 1.8rem;
-    border-left: 3px solid var(--accent);
+  /* ── Section cards shared ── */
+  .section-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--r);
+    padding: 1.6rem 1.8rem;
+    box-shadow: var(--shadow-sm);
     opacity: 0;
-    transform: translateY(12px);
-    transition: opacity 0.5s 0.2s, transform 0.5s 0.2s;
+    transform: translateY(10px);
+    transition: opacity 0.4s 0.15s, transform 0.4s 0.15s;
+    margin-bottom: 1rem;
   }
 
-  .synthesis-card.visible {
+  .section-card.visible {
     opacity: 1;
     transform: translateY(0);
   }
 
+  .section-card-header {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    margin-bottom: 1.1rem;
+    padding-bottom: 0.9rem;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .section-icon {
+    width: 22px;
+    height: 22px;
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.75rem;
+    flex-shrink: 0;
+  }
+
+  .section-label {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.72rem;
+    letter-spacing: 0.08em;
+    font-weight: 500;
+  }
+
+  /* ── Synthesis ── */
+  .synthesis-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--r);
+    padding: 1.6rem 1.8rem;
+    box-shadow: var(--shadow-sm);
+    opacity: 0;
+    transform: translateY(10px);
+    transition: opacity 0.4s 0.15s, transform 0.4s 0.15s;
+    margin-bottom: 1rem;
+    border-left: 3px solid var(--accent);
+  }
+
+  .synthesis-card.visible { opacity: 1; transform: translateY(0); }
+
   .synthesis-header {
     display: flex;
     align-items: center;
-    gap: 0.8rem;
-    margin-bottom: 1.2rem;
-    padding-bottom: 1rem;
+    gap: 0.6rem;
+    margin-bottom: 1rem;
+    padding-bottom: 0.9rem;
     border-bottom: 1px solid var(--border);
   }
 
   .synthesis-icon {
-    font-family: 'Playfair Display', serif;
-    font-size: 1.1rem;
+    font-size: 0.85rem;
     color: var(--accent);
-    font-style: italic;
   }
 
   .synthesis-label {
     font-family: 'IBM Plex Mono', monospace;
-    font-size: 0.75rem;
-    letter-spacing: 0.1em;
+    font-size: 0.72rem;
+    letter-spacing: 0.08em;
+    font-weight: 500;
     color: var(--accent);
   }
 
   .synthesis-text {
-    font-size: 0.92rem;
+    font-size: 0.9rem;
     line-height: 1.8;
     color: var(--text);
     font-weight: 300;
   }
 
-  /* Empty state */
+  /* ── Debate card ── */
+  .debate-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--r);
+    padding: 1.6rem 1.8rem;
+    box-shadow: var(--shadow-sm);
+    opacity: 0;
+    transform: translateY(10px);
+    transition: opacity 0.4s 0.15s, transform 0.4s 0.15s;
+    margin-bottom: 1rem;
+    border-left: 3px solid #6A9ABF;
+  }
+
+  .debate-card.visible { opacity: 1; transform: translateY(0); }
+
+  .debate-header {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    margin-bottom: 1.2rem;
+    padding-bottom: 0.9rem;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .debate-icon { font-size: 0.85rem; color: #6A9ABF; }
+
+  .debate-label {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.72rem;
+    letter-spacing: 0.08em;
+    font-weight: 500;
+    color: #6A9ABF;
+  }
+
+  .debate-round-label {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.66rem;
+    letter-spacing: 0.1em;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    margin-bottom: 0.9rem;
+  }
+
+  .debate-entries {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 0.9rem;
+    margin-bottom: 1.4rem;
+  }
+
+  @media (max-width: 700px) {
+    .debate-entries { grid-template-columns: 1fr; }
+  }
+
+  .debate-entry {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    padding: 1rem;
+    border-radius: var(--r-sm);
+  }
+
+  .debate-entry-model {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.68rem;
+    letter-spacing: 0.07em;
+    margin-bottom: 0.55rem;
+    font-weight: 600;
+  }
+
+  .debate-entry-text {
+    font-size: 0.84rem;
+    line-height: 1.7;
+    color: var(--text);
+    font-weight: 300;
+  }
+
+  .debate-verdict {
+    border-top: 1px solid var(--border);
+    padding-top: 1.1rem;
+  }
+
+  .debate-verdict-label {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.66rem;
+    letter-spacing: 0.1em;
+    color: #6A9ABF;
+    text-transform: uppercase;
+    margin-bottom: 0.7rem;
+  }
+
+  /* ── Verdict rows ── */
+  .verdict-row {
+    display: flex;
+    align-items: baseline;
+    gap: 0.55rem;
+    padding: 0.32rem 0;
+    border-bottom: 1px solid var(--border);
+    font-size: 0.84rem;
+    line-height: 1.4;
+  }
+
+  .verdict-row:last-of-type { border-bottom: none; }
+
+  .verdict-badge {
+    flex-shrink: 0;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.62rem;
+    letter-spacing: 0.05em;
+    padding: 0.15em 0.5em;
+    border-radius: 5px;
+    font-weight: 600;
+  }
+
+  .verdict-badge.brave       { background: var(--brave-bg); color: var(--brave-fg); }
+  .verdict-badge.ok          { background: var(--ok-bg);    color: var(--ok-fg); }
+  .verdict-badge.obecne      { background: var(--warn-bg);  color: var(--warn-fg); }
+  .verdict-badge.chyba       { background: var(--err-bg);   color: var(--err-fg); }
+  .verdict-badge.noveritelne { background: var(--info-bg);  color: var(--info-fg); }
+
+  .verdict-model {
+    flex-shrink: 0;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.68rem;
+    color: var(--text-muted);
+  }
+
+  .verdict-claim { color: var(--text); font-weight: 300; }
+
+  .verdict-summary {
+    margin-top: 0.9rem;
+    padding-top: 0.7rem;
+    border-top: 1px solid var(--border);
+    font-size: 0.875rem;
+    line-height: 1.75;
+    color: var(--text);
+    font-weight: 300;
+  }
+
+  /* ── Answer card ── */
+  .answer-card {
+    background: var(--ok-bg);
+    border: 1px solid color-mix(in srgb, var(--ok-fg) 20%, transparent);
+    border-left: 3px solid var(--ok-fg);
+    border-radius: var(--r);
+    padding: 1.4rem 1.6rem;
+    margin-bottom: 1rem;
+    box-shadow: var(--shadow-sm);
+    transition: opacity 0.5s, transform 0.5s;
+  }
+
+  .answer-label {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.68rem;
+    letter-spacing: 0.1em;
+    color: var(--ok-fg);
+    text-transform: uppercase;
+    font-weight: 600;
+    margin-bottom: 0.7rem;
+  }
+
+  .answer-point {
+    font-size: 0.9rem;
+    line-height: 1.7;
+    color: var(--text);
+    padding: 0.28rem 0;
+    display: flex;
+    gap: 0.6rem;
+  }
+
+  .answer-arrow {
+    color: var(--ok-fg);
+    flex-shrink: 0;
+    font-weight: 600;
+  }
+
+  /* ── Empty state ── */
   .empty-state {
     text-align: center;
-    padding: 6rem 2rem;
+    padding: 7rem 2rem;
     color: var(--text-muted);
   }
 
   .empty-quote {
-    font-family: 'Playfair Display', serif;
-    font-size: 2rem;
-    font-style: italic;
-    margin-bottom: 1rem;
-    opacity: 0.3;
+    font-size: 1.6rem;
+    font-weight: 400;
+    margin-bottom: 0.8rem;
+    color: var(--text);
+    opacity: 0.55;
+    letter-spacing: -0.01em;
   }
 
   .empty-text {
-    font-size: 0.8rem;
+    font-size: 0.75rem;
     letter-spacing: 0.1em;
     text-transform: uppercase;
     font-family: 'IBM Plex Mono', monospace;
+    color: var(--text-muted);
   }
 
-  /* Key warning */
+  /* ── Key warning ── */
   .key-warning {
-    background: #2a1a1a;
-    border: 1px solid #4a2a2a;
-    padding: 0.8rem 1.2rem;
+    background: var(--err-bg);
+    border: 1px solid color-mix(in srgb, var(--err-fg) 25%, transparent);
+    padding: 0.75rem 1rem;
+    border-radius: var(--r-sm);
     margin-bottom: 1.5rem;
-    font-size: 0.8rem;
-    color: #c87474;
+    font-size: 0.78rem;
+    color: var(--err-fg);
     font-family: 'IBM Plex Mono', monospace;
     display: none;
   }
 
   .key-warning.visible { display: block; }
 
-  /* History */
+  /* ── History ── */
   .history-section {
-    margin-top: 4rem;
+    margin-top: 3.5rem;
     border-top: 1px solid var(--border);
-    padding-top: 2rem;
+    padding-top: 1.8rem;
   }
 
   .history-title {
     font-family: 'IBM Plex Mono', monospace;
-    font-size: 0.7rem;
-    letter-spacing: 0.15em;
+    font-size: 0.68rem;
+    letter-spacing: 0.12em;
     text-transform: uppercase;
     color: var(--text-muted);
-    margin-bottom: 1.5rem;
+    margin-bottom: 1rem;
   }
 
   .history-item {
-    padding: 0.8rem 0;
+    padding: 0.7rem 0;
     border-bottom: 1px solid var(--border);
     cursor: pointer;
     display: flex;
     align-items: baseline;
     gap: 1rem;
-    transition: color 0.15s;
+    transition: color 0.12s;
   }
 
   .history-item:hover { color: var(--accent); }
@@ -503,23 +887,37 @@
 
   .history-time {
     font-family: 'IBM Plex Mono', monospace;
-    font-size: 0.65rem;
+    font-size: 0.62rem;
     color: var(--text-muted);
     flex-shrink: 0;
   }
 
-  @media (max-width: 900px) {
+  /* ── Responsive ── */
+  @media (max-width: 1100px) {
+    .responses-grid { grid-template-columns: repeat(2, 1fr); }
+  }
+
+  @media (max-width: 600px) {
     .responses-grid { grid-template-columns: 1fr; }
-    header { padding: 1.5rem; flex-wrap: wrap; }
-    main { padding: 1.5rem; }
+    header { padding: 0 1.2rem; }
+    main   { padding: 1.4rem 1.2rem 4rem; }
+    .tagline { display: none; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
   }
 </style>
 </head>
 <body>
 
 <header>
-  <div class="logo">AI <span>Agora</span></div>
+  <div class="logo">
+    <span class="logo-ring">AI</span>
+    Ring
+  </div>
   <div class="tagline">Tři hlasy, jedna otázka</div>
+  <div class="tagline" style="opacity:0.5">v0.1.0</div>
   <button class="settings-btn" onclick="openSettings()">⚙ API klíče</button>
 </header>
 
@@ -553,6 +951,14 @@
       <input type="password" class="key-input" id="keyGemini" placeholder="AIza..." autocomplete="off">
     </div>
 
+    <div class="key-group">
+      <div class="key-label">
+        <span class="key-dot" style="background:#e05c2a"></span>
+        BRAVE (OVĚŘOVATEL)
+      </div>
+      <input type="password" class="key-input" id="keyBrave" placeholder="BSA..." autocomplete="off">
+    </div>
+
     <div class="modal-actions">
       <button class="btn-save" onclick="saveKeys()">Uložit klíče</button>
       <button class="btn-cancel" onclick="closeSettings()">Zrušit</button>
@@ -567,18 +973,41 @@
 
   <div class="query-area">
     <div class="query-label">Tvoje otázka</div>
-    <div class="query-wrapper">
-      <textarea
-        class="query-input"
-        id="queryInput"
-        placeholder="Na co se chceš zeptat? Všechny tři AI odpoví najednou a jejich odpovědi budou porovnány..."
-        onkeydown="handleKeydown(event)"
-      ></textarea>
+    <div class="query-wrapper" id="queryWrapper">
+      <div style="flex:1;display:flex;flex-direction:column">
+        <textarea
+          class="query-input"
+          id="queryInput"
+          placeholder="Na co se chceš zeptat? Všechny tři AI odpoví najednou a jejich odpovědi budou porovnány..."
+          onkeydown="handleKeydown(event)"
+          onpaste="handlePaste(event)"
+        ></textarea>
+        <div class="image-bar" id="imageBar">
+          <button class="image-upload-btn" onclick="document.getElementById('imageFileInput').click()">⊕ Přidat obrázek</button>
+          <input type="file" id="imageFileInput" accept="image/*" style="display:none" onchange="handleImageFile(event)">
+          <div class="image-preview" id="imagePreview" style="display:none">
+            <img id="imageThumb" src="" alt="náhled">
+            <button class="image-remove" onclick="removeImage()" title="Odstranit">×</button>
+          </div>
+          <span id="imageLabel" style="font-size:0.72rem;font-family:'IBM Plex Mono',monospace;color:var(--text-muted)"></span>
+        </div>
+      </div>
       <button class="ask-btn" id="askBtn" onclick="askAll()">
         <span id="askBtnText">Zeptat se</span>
       </button>
     </div>
     <div class="status-bar" id="statusBar"></div>
+    <div class="loading-queue" id="loadingQueue" style="display:none">
+      <span class="queue-step" id="q_models">◎ Modely</span>
+      <span class="queue-sep">→</span>
+      <span class="queue-step" id="q_synthesis">◎ Syntéza</span>
+      <span class="queue-sep">→</span>
+      <span class="queue-step" id="q_defense">◎ Obhajoby</span>
+      <span class="queue-sep">→</span>
+      <span class="queue-step" id="q_judge">◎ Soudce</span>
+      <span class="queue-sep">→</span>
+      <span class="queue-step" id="q_answer">◎ Odpověď</span>
+    </div>
   </div>
 
   <div id="resultsArea">
@@ -603,7 +1032,8 @@
     return {
       anthropic: localStorage.getItem('agora_key_anthropic') || '',
       openai: localStorage.getItem('agora_key_openai') || '',
-      gemini: localStorage.getItem('agora_key_gemini') || ''
+      gemini: localStorage.getItem('agora_key_gemini') || '',
+      brave: localStorage.getItem('agora_key_brave') || ''
     };
   }
 
@@ -612,6 +1042,7 @@
     document.getElementById('keyAnthropic').value = keys.anthropic;
     document.getElementById('keyOpenAI').value = keys.openai;
     document.getElementById('keyGemini').value = keys.gemini;
+    document.getElementById('keyBrave').value = keys.brave;
     document.getElementById('settingsModal').classList.add('active');
   }
 
@@ -623,6 +1054,7 @@
     localStorage.setItem('agora_key_anthropic', document.getElementById('keyAnthropic').value.trim());
     localStorage.setItem('agora_key_openai', document.getElementById('keyOpenAI').value.trim());
     localStorage.setItem('agora_key_gemini', document.getElementById('keyGemini').value.trim());
+    localStorage.setItem('agora_key_brave', document.getElementById('keyBrave').value.trim());
     closeSettings();
     checkKeys();
   }
@@ -631,6 +1063,48 @@
     const keys = getKeys();
     const missing = !keys.anthropic && !keys.openai && !keys.gemini;
     document.getElementById('keyWarning').classList.toggle('visible', missing);
+  }
+
+  // --- Image handling ---
+  let currentImage = null; // { base64: '...', mimeType: 'image/jpeg' }
+
+  function handleImageFile(e) {
+    const file = e.target.files[0];
+    if (!file) return;
+    loadImageFile(file);
+  }
+
+  function handlePaste(e) {
+    const items = e.clipboardData?.items;
+    if (!items) return;
+    for (const item of items) {
+      if (item.type.startsWith('image/')) {
+        e.preventDefault();
+        loadImageFile(item.getAsFile());
+        return;
+      }
+    }
+  }
+
+  function loadImageFile(file) {
+    const reader = new FileReader();
+    reader.onload = (ev) => {
+      const dataUrl = ev.target.result;
+      const base64 = dataUrl.split(',')[1];
+      currentImage = { base64, mimeType: file.type || 'image/jpeg' };
+      document.getElementById('imageThumb').src = dataUrl;
+      document.getElementById('imagePreview').style.display = 'inline-flex';
+      document.getElementById('imageLabel').textContent = file.name || 'obrázek';
+    };
+    reader.readAsDataURL(file);
+  }
+
+  function removeImage() {
+    currentImage = null;
+    document.getElementById('imagePreview').style.display = 'none';
+    document.getElementById('imageLabel').textContent = '';
+    document.getElementById('imageFileInput').value = '';
+    document.getElementById('imageThumb').src = '';
   }
 
   // --- Keyboard ---
@@ -644,6 +1118,7 @@
   // --- Markdown parser ---
   function parseMarkdown(text) {
     return text
+      .replace(/^#### (.+)$/gm, '<strong style="display:block;margin:0.6em 0 0.2em">$1</strong>')
       .replace(/^### (.+)$/gm, '<h4 style="margin:0.8em 0 0.3em;font-size:0.9em;font-family:IBM Plex Sans,sans-serif">$1</h4>')
       .replace(/^## (.+)$/gm, '<h3 style="margin:0.8em 0 0.3em;font-size:1em;font-family:IBM Plex Sans,sans-serif">$1</h3>')
       .replace(/^# (.+)$/gm, '<h2 style="margin:0.8em 0 0.3em;font-size:1.1em;font-family:IBM Plex Sans,sans-serif">$1</h2>')
@@ -657,7 +1132,13 @@
   }
 
   // --- API calls ---
-  async function callClaude(question, apiKey) {
+  async function callClaude(question, apiKey, image = null) {
+    const content = image
+      ? [
+          { type: 'image', source: { type: 'base64', media_type: image.mimeType, data: image.base64 } },
+          { type: 'text', text: question }
+        ]
+      : question;
     const response = await fetch('https://api.anthropic.com/v1/messages', {
       method: 'POST',
       headers: {
@@ -669,7 +1150,7 @@
       body: JSON.stringify({
         model: 'claude-sonnet-4-6',
         max_tokens: 1500,
-        messages: [{ role: 'user', content: question }]
+        messages: [{ role: 'user', content }]
       })
     });
     if (!response.ok) throw new Error(`Claude API error: ${response.status}`);
@@ -677,7 +1158,13 @@
     return { text: data.content[0].text, truncated: data.stop_reason === 'max_tokens' };
   }
 
-  async function callGPT(question, apiKey) {
+  async function callGPT(question, apiKey, image = null) {
+    const content = image
+      ? [
+          { type: 'image_url', image_url: { url: `data:${image.mimeType};base64,${image.base64}` } },
+          { type: 'text', text: question }
+        ]
+      : question;
     const response = await fetch('https://api.openai.com/v1/chat/completions', {
       method: 'POST',
       headers: {
@@ -687,7 +1174,7 @@
       body: JSON.stringify({
         model: 'gpt-4o',
         max_tokens: 1500,
-        messages: [{ role: 'user', content: question }]
+        messages: [{ role: 'user', content }]
       })
     });
     if (!response.ok) throw new Error(`OpenAI API error: ${response.status}`);
@@ -695,14 +1182,17 @@
     return { text: data.choices[0].message.content, truncated: data.choices[0].finish_reason === 'length' };
   }
 
-  async function callGemini(question, apiKey) {
+  async function callGemini(question, apiKey, image = null) {
+    const parts = image
+      ? [{ inline_data: { mime_type: image.mimeType, data: image.base64 } }, { text: question }]
+      : [{ text: question }];
     const response = await fetch(
       `https://generativelanguage.googleapis.com/v1beta/models/gemini-3.5-flash:generateContent?key=${apiKey}`,
       {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          contents: [{ parts: [{ text: question }] }],
+          contents: [{ parts }],
           generationConfig: { maxOutputTokens: 4096 }
         })
       }
@@ -712,10 +1202,161 @@
     return { text: data.candidates[0].content.parts[0].text, truncated: data.candidates[0].finishReason === 'MAX_TOKENS' };
   }
 
+  // --- Defense round: each model defends via its own API ---
+  const DEFENSE_INSTRUCTIONS = `
+Pravidla obhajoby — MUSÍŠ dodržet:
+1. Vyber 2–4 klíčová tvrzení ze své odpovědi.
+2. U každého tvrzení uveď zdroj ve formátu: [Autor/Instituce, rok nebo "přibližně rok"] nebo [název studie/zprávy]. Pokud zdroj neznáš, napiš výslovně "NEPODLOŽENO".
+3. Napadni 1–2 konkrétní tvrzení soupeřů — ne obecně, ale cituj přesně co řekli a proč je to nepřesné nebo nepodložené.
+4. Nepiš žádné úvody ani závěry. Jen seznam tvrzení se zdroji a protiargumenty.
+5. Maximálně 180 slov. Bez markdown.`;
+
+  async function callClaudeDefense(question, myAnswer, others, apiKey) {
+    const prompt = `Otázka: "${question}"
+
+Tvoje odpověď:
+${myAnswer}
+
+Soupeři:
+GPT-4o: ${others.gpt || '(nedostupné)'}
+Gemini: ${others.gemini || '(nedostupné)'}
+${DEFENSE_INSTRUCTIONS}`;
+    const r = await callClaude(prompt, apiKey);
+    return r.text;
+  }
+
+  async function callGPTDefense(question, myAnswer, others, apiKey) {
+    const prompt = `Otázka: "${question}"
+
+Tvoje odpověď:
+${myAnswer}
+
+Soupeři:
+Claude: ${others.claude || '(nedostupné)'}
+Gemini: ${others.gemini || '(nedostupné)'}
+${DEFENSE_INSTRUCTIONS}`;
+    const r = await callGPT(prompt, apiKey);
+    return r.text;
+  }
+
+  async function callGeminiDefense(question, myAnswer, others, apiKey) {
+    const prompt = `Otázka: "${question}"
+
+Tvoje odpověď:
+${myAnswer}
+
+Soupeři:
+Claude: ${others.claude || '(nedostupné)'}
+GPT-4o: ${others.gpt || '(nedostupné)'}
+${DEFENSE_INSTRUCTIONS}`;
+    const r = await callGemini(prompt, apiKey);
+    return r.text;
+  }
+
+  async function callJudge(question, responses, defenses, braveResult, apiKey) {
+    const braveSection = braveResult
+      ? `--- WEBOVÉ ZDROJE (Brave Search) ---
+Toto jsou reálné stránky nalezené na webu k dané otázce. Porovnej tvrzení modelů s tím co tyto zdroje říkají.
+${braveResult.sources.map((s, i) => `[${i+1}] ${s.title}
+    URL: ${s.url}
+    ${s.description || ''}`).join('\n')}`
+      : `--- WEBOVÉ ZDROJE ---
+(Brave API klíč nebyl zadán)`;
+
+    const prompt = `Jsi soudce v debatě tří AI modelů. Máš k dispozici nezávislé ověření z webu. Hodnoť POUZE na základě doložených důkazů.
+
+Otázka: "${question}"
+
+--- KOLO 1: Původní odpovědi ---
+Claude: ${responses.claude || '(nedostupné)'}
+GPT-4o: ${responses.gpt || '(nedostupné)'}
+Gemini: ${responses.gemini || '(nedostupné)'}
+
+--- KOLO 2: Obhajoby se zdroji ---
+Claude: ${defenses.claude || '(nevyjádřil se)'}
+GPT-4o: ${defenses.gpt || '(nevyjádřil se)'}
+Gemini: ${defenses.gemini || '(nevyjádřil se)'}
+
+${braveSection}
+
+Vynes verdikt ve DVOU částech:
+
+ČÁST 1 — HODNOCENÍ TVRZENÍ
+Vypiš každé klíčové tvrzení jako jeden řádek v přesném formátu:
+STATUS|MODEL|TVRZENÍ
+
+STATUS musí být přesně jedno z: BRAVE | OK | OBECNE | CHYBA | NEOVERITELNE
+BRAVE = tvrzení je přímo potvrzeno konkrétním Brave zdrojem (uveď číslo zdroje v tvrzení)
+OK = tvrzení je logicky konzistentní a nepopřené
+OBECNE = platí obecně ale ne specificky pro tento případ
+CHYBA = tvrzení je prokazatelně špatně
+NEOVERITELNE = nelze ověřit, není zdroj
+
+MODEL je: Claude / GPT-4o / Gemini / Všichni
+TVRZENÍ je stručně (max 90 znaků)
+
+Příklad:
+BRAVE|Gemini|ACF-50 neutralizuje korozi — potvrzeno [1] a [3]
+OK|Všichni|WD-40 se rychle odpaří a neposkytuje trvalou ochranu
+OBECNE|Claude|Poměr míchání 1:50 — obecné pravidlo, pro trial neověřeno
+CHYBA|GPT-4o|Castrol Power 1 Racing 2T vhodný pro trial — silniční olej
+NEOVERITELNE|Gemini|TRS spolupracuje s NILS — žádný zdroj
+
+ČÁST 2 — VERDIKT
+Dvě až tři věty: kdo byl nejpřesnější a proč. Bez omluv.
+
+ČÁST 3 — SPRÁVNÁ ODPOVĚĎ
+Napiš 2-4 konkrétní body — co je skutečně pravda k původní otázce.
+Pouze fakta označená BRAVE nebo OK. Žádné modely, žádné hodnocení modelů.
+KAŽDÝ bod musí být na samostatném řádku a začínat přesně "→ " (šipka, mezera).
+Příklad:
+→ Zubní pasta (bílá, negelová) je šetrné a účinné čistidlo žehlicí plochy
+→ Hadřík namočený v octu odstraní připáleniny bez poškození povrchu
+→ Nikdy nepoužívej drátěnku — poškrábe povrch
+
+Dodržuj přesný formát — žádný jiný text mezi řádky ČÁSTI 1.`;
+    const r = await callClaude(prompt, apiKey);
+    return r.text;
+  }
+
+  // URL tvého Cloudflare Workeru — změň po deployi brave-proxy.js
+  const BRAVE_PROXY = 'https://brave-proxy.omnirobot.workers.dev';
+
+  async function callBrave(question, apiKey) {
+    if (BRAVE_PROXY.includes('YOUR-NAME')) {
+      throw new Error('Cloudflare Worker není nastaven — viz brave-proxy.js');
+    }
+
+    const searchQuery = `${question} review zkušenosti forum`;
+    const resp = await fetch(`${BRAVE_PROXY}?q=${encodeURIComponent(searchQuery)}`, {
+      method: 'GET',
+      headers: {
+        'X-Subscription-Token': apiKey
+      }
+    });
+    if (!resp.ok) throw new Error(`Brave error: ${resp.status}`);
+    const data = await resp.json();
+
+    // Web Search API — extract results with URLs
+    const sources = [];
+    if (data.web && data.web.results) {
+      data.web.results.slice(0, 8).forEach(r => {
+        sources.push({ title: r.title, url: r.url, description: r.description || '' });
+      });
+    }
+
+    // Build readable answer from snippets
+    const answerText = sources.length > 0
+      ? sources.map(s => `${s.title}: ${s.description}`).join('\n')
+      : '(Brave nenašel výsledky)';
+
+    return { text: answerText, sources };
+  }
+
   async function callSynthesis(question, responses, apiKey) {
     const prompt = `Uživatel se zeptal: "${question}"
 
-Tři různé AI modely odpověděly takto:
+Tři AI modely odpověděly:
 
 Claude: ${responses.claude || '(nedostupné)'}
 
@@ -723,10 +1364,80 @@ GPT-4o: ${responses.gpt || '(nedostupné)'}
 
 Gemini: ${responses.gemini || '(nedostupné)'}
 
-Tvůj úkol: Porovnej tyto tři odpovědi kriticky a věcně. Kde se shodují? Kde se liší a proč? Která odpověď je nejpřesnější nebo nejúplnější a proč? Buď konkrétní, ne vágní. Maximálně 200 slov. Odpověz prostým textem bez markdown formátování.`;
+Tvůj úkol je vést ostrý křížový výslech těchto odpovědí. Postupuj takto:
+
+ROZPORY: Najdi konkrétní body kde se modely liší nebo si odporují. Cituj přesně co který model řekl.
+
+NEPODLOŽENÁ TVRZENÍ: Která konkrétní tvrzení jsou pouhé assertion bez zdroje — bez autora, instituce, studie nebo roku? Pojmenuj je. Věty jako "výzkumy ukazují" nebo "odborníci tvrdí" bez odkazu jsou nepodložené.
+
+VERDIKT: Která tvrzení mají alespoň nějaký konkrétní základ (jméno, instituce, datum)? Která jsou čistá spekulace?
+
+Piš jako analytik, ne diplomat. Maximálně 250 slov. Bez markdown formátování.`;
 
     const result = await callClaude(prompt, apiKey);
     return result;
+  }
+
+  // --- Verdict renderer ---
+  function renderVerdict(text) {
+    const lines = text.split('\n').map(l => l.trim()).filter(Boolean);
+    const rows = [];
+    const summaryLines = [];
+    const answerLines = [];
+    let section = 1; // 1=claims, 2=verdict, 3=answer
+
+    const badgeMap = {
+      'BRAVE':         ['brave',       '⬤ Brave zdroj'],
+      'OK':            ['ok',          '✓ Potvrzeno'],
+      'OBECNE':        ['obecne',      '~ Obecně'],
+      'CHYBA':         ['chyba',       '✗ Chyba'],
+      'NEOVERITELNE':  ['noveritelne', '? Neověřitelné'],
+    };
+
+    for (const line of lines) {
+      if (/^#+ |^---+$/.test(line)) continue;
+      if (/^→ /.test(line) && section < 3) { section = 3; }
+      if (/ČÁST 2|VERDIKT/i.test(line)) { section = 2; continue; }
+      if (/ČÁST 3|SPRÁVN|ANSWER/i.test(line)) { section = 3; continue; }
+
+      if (section === 3) {
+        // skip stray verdict-format lines that the LLM sometimes puts in ČÁST 3
+        if (/^(BRAVE|OK|OBECNE|CHYBA|NEOVERITELNE)\|/i.test(line.replace(/^→\s*/, ''))) continue;
+        answerLines.push(line);
+        continue;
+      }
+      if (section === 2) { summaryLines.push(line); continue; }
+
+      const parts = line.split('|');
+      if (parts.length === 3) {
+        const [status, model, claim] = parts.map(p => p.trim());
+        const [cls, label] = badgeMap[status.toUpperCase()] || ['noveritelne', '? ' + status];
+        rows.push(`<div class="verdict-row">
+          <span class="verdict-badge ${cls}">${label}</span>
+          <span class="verdict-model">${model}</span>
+          <span class="verdict-claim">${claim}</span>
+        </div>`);
+      } else if (rows.length > 0) {
+        summaryLines.push(line);
+      }
+    }
+
+    // Fill answer card
+    const answerEl = document.getElementById('text_answer');
+    if (answerEl && answerLines.length > 0) {
+      answerEl.innerHTML = answerLines
+        .filter(l => l.startsWith('→') || l.startsWith('-'))
+        .map(l => {
+          const text = l.replace(/^→\s*|-\s*/, '');
+          return `<div class="answer-point"><span class="answer-arrow">→</span><span>${text}</span></div>`;
+        }).join('');
+    } else if (answerEl) {
+      answerEl.innerHTML = '<span style="color:var(--text-muted);font-size:0.85rem">Soudce nespecifikoval správnou odpověď.</span>';
+    }
+
+    const summary = summaryLines.join(' ').trim();
+    return (rows.length ? rows.join('') : parseMarkdown(text))
+      + (summary ? `<div class="verdict-summary">${parseMarkdown(summary)}</div>` : '');
   }
 
   // --- Status helpers ---
@@ -741,6 +1452,20 @@ Tvůj úkol: Porovnej tyto tři odpovědi kriticky a věcně. Kde se shodují? K
     }
     const dotClass = state === 'loading' ? 'loading' : state === 'done' ? 'done' : state === 'error' ? 'error' : '';
     item.innerHTML = `<span class="status-dot ${dotClass}"></span>${label}`;
+  }
+
+  // --- Queue indicator ---
+  function setQueue(step) {
+    const steps = ['models','synthesis','defense','judge','answer'];
+    const q = document.getElementById('loadingQueue');
+    if (!q) return;
+    q.style.display = 'flex';
+    steps.forEach(s => {
+      const el = document.getElementById('q_' + s);
+      if (!el) return;
+      el.className = 'queue-step' + (s === step ? ' active' : steps.indexOf(s) < steps.indexOf(step) ? ' done' : '');
+    });
+    if (step === 'done') q.style.display = 'none';
   }
 
   // --- Skeleton loader ---
@@ -764,6 +1489,7 @@ Tvůj úkol: Porovnej tyto tři odpovědi kriticky a věcně. Kde se shodují? K
     document.getElementById('askBtnText').textContent = 'Ptám se...';
     document.getElementById('statusBar').innerHTML = '';
     document.getElementById('emptyState') && document.getElementById('emptyState').remove();
+    setQueue('models');
 
     // Build grid
     const resultsArea = document.getElementById('resultsArea');
@@ -793,6 +1519,14 @@ Tvůj úkol: Porovnej tyto tři odpovědi kriticky a věcně. Kde se shodují? K
           </div>
           <div class="response-text" id="text_gemini">${skeletonHTML()}</div>
         </div>
+        <div class="response-card" id="card_brave" style="${keys.brave ? '' : 'display:none'}">
+          <div class="card-header">
+            <span class="model-dot" style="background:#e05c2a"></span>
+            <span class="model-name" style="color:#e05c2a">Brave</span>
+            <span class="model-version">web search</span>
+          </div>
+          <div class="response-text" id="text_brave">${skeletonHTML()}</div>
+        </div>
       </div>
       <div class="synthesis-card" id="synthesisCard">
         <div class="synthesis-header">
@@ -800,6 +1534,35 @@ Tvůj úkol: Porovnej tyto tři odpovědi kriticky a věcně. Kde se shodují? K
           <span class="synthesis-label">Syntéza a kritika</span>
         </div>
         <div class="synthesis-text" id="text_synthesis">${skeletonHTML()}</div>
+      </div>
+      <div class="debate-card" id="debateCard">
+        <div class="debate-header">
+          <span class="debate-icon">⚖</span>
+          <span class="debate-label">Křížový výslech — Kolo 2: Obhajoby</span>
+        </div>
+        <div class="debate-round-label">Každý model obhajuje svá tvrzení</div>
+        <div class="debate-entries">
+          <div class="debate-entry">
+            <div class="debate-entry-model" style="color:var(--claude)">Claude</div>
+            <div class="debate-entry-text" id="text_defense_claude">${skeletonHTML()}</div>
+          </div>
+          <div class="debate-entry">
+            <div class="debate-entry-model" style="color:var(--gpt)">GPT-4o</div>
+            <div class="debate-entry-text" id="text_defense_gpt">${skeletonHTML()}</div>
+          </div>
+          <div class="debate-entry">
+            <div class="debate-entry-model" style="color:var(--gemini)">Gemini</div>
+            <div class="debate-entry-text" id="text_defense_gemini">${skeletonHTML()}</div>
+          </div>
+        </div>
+        <div class="debate-verdict">
+          <div class="debate-verdict-label">Verdikt soudce</div>
+          <div class="debate-verdict-text" id="text_judge">${skeletonHTML()}</div>
+        </div>
+      </div>
+      <div class="answer-card" id="answerCard" style="opacity:0;transform:translateY(12px)">
+        <div class="answer-label">✓ Správná odpověď</div>
+        <div id="text_answer">${skeletonHTML()}</div>
       </div>
     `;
 
@@ -832,7 +1595,7 @@ Tvůj úkol: Porovnej tyto tři odpovědi kriticky a věcně. Kde se shodují? K
     if (keys.anthropic) {
       setStatus('claude', 'loading', 'Claude odpovídá');
       promises.push(
-        callClaude(question, keys.anthropic)
+        callClaude(question, keys.anthropic, currentImage)
           .then(r => {
             responses.claude = r.text;
             updateCard('claude', r);
@@ -850,7 +1613,7 @@ Tvůj úkol: Porovnej tyto tři odpovědi kriticky a věcně. Kde se shodují? K
     if (keys.openai) {
       setStatus('gpt', 'loading', 'GPT odpovídá');
       promises.push(
-        callGPT(question, keys.openai)
+        callGPT(question, keys.openai, currentImage)
           .then(r => {
             responses.gpt = r.text;
             updateCard('gpt', r);
@@ -868,7 +1631,7 @@ Tvůj úkol: Porovnej tyto tři odpovědi kriticky a věcně. Kde se shodují? K
     if (keys.gemini) {
       setStatus('gemini', 'loading', 'Gemini odpovídá');
       promises.push(
-        callGemini(question, keys.gemini)
+        callGemini(question, keys.gemini, currentImage)
           .then(r => {
             responses.gemini = r.text;
             updateCard('gemini', r);
@@ -886,6 +1649,12 @@ Tvůj úkol: Porovnej tyto tři odpovědi kriticky a věcně. Kde se shodují? K
     // Wait for all
     await Promise.allSettled(promises);
 
+    setQueue('synthesis');
+    // Show synthesis card immediately with skeleton
+    setTimeout(() => {
+      document.getElementById('synthesisCard')?.classList.add('visible');
+    }, 100);
+
     // Synthesis
     if (keys.anthropic && (responses.claude || responses.gpt || responses.gemini)) {
       setStatus('synthesis', 'loading', 'Syntéza...');
@@ -901,10 +1670,111 @@ Tvůj úkol: Porovnej tyto tři odpovědi kriticky a věcně. Kde se shodují? K
       updateCard('synthesis', 'Pro syntézu je potřeba Anthropic API klíč.', true);
     }
 
-    // Show synthesis card
+    setQueue('defense');
+    // Show debate card immediately with skeletons
     setTimeout(() => {
-      document.getElementById('synthesisCard')?.classList.add('visible');
+      document.getElementById('debateCard')?.classList.add('visible');
     }, 100);
+
+    // Debate round
+    if (keys.anthropic && (responses.claude || responses.gpt || responses.gemini)) {
+      setStatus('debate', 'loading', 'Výslech kolo 2...');
+      const debatePromises = [];
+      const defenses = { claude: null, gpt: null, gemini: null };
+
+      function updateDebate(id, text, isError = false) {
+        const el = document.getElementById('text_defense_' + id);
+        if (el) {
+          el.innerHTML = isError ? `<span style="color:#c87474">${text}</span>` : text;
+        }
+      }
+
+      if (keys.anthropic && responses.claude) {
+        debatePromises.push(
+          callClaudeDefense(question, responses.claude, responses, keys.anthropic)
+            .then(t => { defenses.claude = t; updateDebate('claude', t); })
+            .catch(e => updateDebate('claude', 'Chyba: ' + e.message, true))
+        );
+      } else {
+        updateDebate('claude', responses.claude ? '(klíč chybí)' : '(model neodpověděl)');
+      }
+
+      if (keys.openai && responses.gpt) {
+        debatePromises.push(
+          callGPTDefense(question, responses.gpt, responses, keys.openai)
+            .then(t => { defenses.gpt = t; updateDebate('gpt', t); })
+            .catch(e => updateDebate('gpt', 'Chyba: ' + e.message, true))
+        );
+      } else {
+        updateDebate('gpt', responses.gpt ? '(klíč chybí)' : '(model neodpověděl)');
+      }
+
+      if (keys.gemini && responses.gemini) {
+        debatePromises.push(
+          callGeminiDefense(question, responses.gemini, responses, keys.gemini)
+            .then(t => { defenses.gemini = t; updateDebate('gemini', t); })
+            .catch(e => updateDebate('gemini', 'Chyba: ' + e.message, true))
+        );
+      } else {
+        updateDebate('gemini', responses.gemini ? '(klíč chybí)' : '(model neodpověděl)');
+      }
+
+      // Brave runs in parallel with defenses
+      let braveResult = null;
+      if (keys.brave) {
+        setStatus('brave', 'loading', 'Brave ověřuje...');
+        debatePromises.push(
+          callBrave(question, keys.brave)
+            .then(r => {
+              braveResult = r;
+              const braveEl = document.getElementById('text_brave');
+              if (braveEl) {
+                if (r.sources.length > 0) {
+                  braveEl.innerHTML = r.sources.map(s =>
+                    `<div style="margin-bottom:0.8em">
+                      <a href="${s.url}" target="_blank" rel="noopener" style="color:#e05c2a;text-decoration:none;font-weight:500">↗ ${s.title}</a>
+                      ${s.description ? `<div style="font-size:0.8rem;color:var(--text);opacity:0.75;margin-top:0.2em;line-height:1.5">${s.description}</div>` : ''}
+                    </div>`
+                  ).join('');
+                } else {
+                  braveEl.innerHTML = '(Brave nenašel výsledky)';
+                }
+              }
+              setStatus('brave', 'done', 'Brave ✓');
+            })
+            .catch(e => {
+              const braveEl = document.getElementById('text_brave');
+              if (braveEl) braveEl.innerHTML = `<span style="color:#c87474">Brave chyba: ${e.message}</span>`;
+              setStatus('brave', 'error', 'Brave ✗');
+            })
+        );
+      }
+
+      await Promise.allSettled(debatePromises);
+
+      setQueue('judge');
+      // Judge verdict
+      setStatus('debate', 'loading', 'Soudce vyhodnocuje...');
+      try {
+        const verdict = await callJudge(question, responses, defenses, braveResult, keys.anthropic);
+        const judgeEl = document.getElementById('text_judge');
+        if (judgeEl) judgeEl.innerHTML = renderVerdict(verdict);
+        setStatus('debate', 'done', 'Výslech ✓');
+      } catch(e) {
+        const judgeEl = document.getElementById('text_judge');
+        if (judgeEl) judgeEl.innerHTML = `<span style="color:#c87474">Soudce selhal: ${e.message}</span>`;
+        setStatus('debate', 'error', 'Výslech ✗');
+      }
+
+      setQueue('answer');
+      setTimeout(() => {
+        const ac = document.getElementById('answerCard');
+        if (ac) { ac.style.opacity = '1'; ac.style.transform = 'translateY(0)'; }
+      }, 300);
+    } else {
+      document.getElementById('debateCard')?.remove();
+      document.getElementById('answerCard')?.remove();
+    }
 
     // Save to history
     history.unshift({ q: question, time: new Date().toLocaleTimeString('cs-CZ', {hour:'2-digit', minute:'2-digit'}) });
@@ -912,6 +1782,8 @@ Tvůj úkol: Porovnej tyto tři odpovědi kriticky a věcně. Kde se shodují? K
     localStorage.setItem('agora_history', JSON.stringify(history));
     renderHistory();
 
+    setQueue('done');
+    removeImage();
     // Reset button
     document.getElementById('askBtn').disabled = false;
     document.getElementById('askBtnText').textContent = 'Zeptat se';
