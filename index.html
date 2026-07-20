@@ -40,9 +40,9 @@
       --bg:       #141310;
       --surface:  #1E1C18;
       --surface2: #272420;
-      --border:   #343028;
+      --border:   #3E3A32;
       --text:     #EAE6DC;
-      --text-muted: #706C62;
+      --text-muted: #9E9A90;
 
       --claude:  #D08844;
       --gpt:     #5CB896;
@@ -50,11 +50,11 @@
       --brave-c: #E06840;
       --accent:  #D08844;
 
-      --ok-bg:   #162A1E; --ok-fg:   #6BAE7C;
-      --err-bg:  #2A1616; --err-fg:  #C87474;
-      --warn-bg: #261E10; --warn-fg: #C8A060;
-      --info-bg: #181626; --info-fg: #8080C8;
-      --brave-bg:#261408; --brave-fg:#E06030;
+      --ok-bg:   #162A1E; --ok-fg:   #7EC48E;
+      --err-bg:  #2A1616; --err-fg:  #D48888;
+      --warn-bg: #261E10; --warn-fg: #D4A870;
+      --info-bg: #181626; --info-fg: #9090D8;
+      --brave-bg:#261408; --brave-fg:#E87040;
 
       --shadow-sm: 0 1px 3px rgba(0,0,0,.25);
       --shadow-md: 0 3px 10px rgba(0,0,0,.30), 0 1px 3px rgba(0,0,0,.18);
@@ -63,8 +63,8 @@
   }
 
   :root[data-theme="light"] {
-    --bg:#F5F4F0;--surface:#FFFFFF;--surface2:#EDECEA;--border:#CECCС6;
-    --text:#0E0C06;--text-muted:#545250;
+    --bg:#F5F4F0;--surface:#FFFFFF;--surface2:#EDECEA;--border:#C4C1BA;
+    --text:#0E0C06;--text-muted:#46443F;
     --claude:#A85418;--gpt:#1E7A54;--gemini:#523898;--brave-c:#BC3C0C;--accent:#A85418;
     --ok-bg:#E6F4EC;--ok-fg:#145E38;--err-bg:#FCEAEA;--err-fg:#A82828;
     --warn-bg:#FAF1E2;--warn-fg:#7A4C0C;--info-bg:#ECEAFA;--info-fg:#42308E;
@@ -75,12 +75,12 @@
   }
 
   :root[data-theme="dark"] {
-    --bg:#141310;--surface:#1E1C18;--surface2:#272420;--border:#343028;
-    --text:#EAE6DC;--text-muted:#706C62;
+    --bg:#141310;--surface:#1E1C18;--surface2:#272420;--border:#3E3A32;
+    --text:#EAE6DC;--text-muted:#9E9A90;
     --claude:#D08844;--gpt:#5CB896;--gemini:#9A7CD4;--brave-c:#E06840;--accent:#D08844;
-    --ok-bg:#162A1E;--ok-fg:#6BAE7C;--err-bg:#2A1616;--err-fg:#C87474;
-    --warn-bg:#261E10;--warn-fg:#C8A060;--info-bg:#181626;--info-fg:#8080C8;
-    --brave-bg:#261408;--brave-fg:#E06030;
+    --ok-bg:#162A1E;--ok-fg:#7EC48E;--err-bg:#2A1616;--err-fg:#D48888;
+    --warn-bg:#261E10;--warn-fg:#D4A870;--info-bg:#181626;--info-fg:#9090D8;
+    --brave-bg:#261408;--brave-fg:#E87040;
     --shadow-sm:0 1px 3px rgba(0,0,0,.25);
     --shadow-md:0 3px 10px rgba(0,0,0,.30),0 1px 3px rgba(0,0,0,.18);
     --shadow-lg:0 8px 28px rgba(0,0,0,.38),0 2px 8px rgba(0,0,0,.22);
@@ -148,17 +148,20 @@
   }
 
   .settings-btn {
-    margin-left: auto;
     background: var(--surface2);
     border: 1px solid var(--border);
     color: var(--text-muted);
-    padding: 0.38rem 0.9rem;
+    height: 32px;
+    padding: 0 0.9rem;
     font-family: 'IBM Plex Mono', monospace;
     font-size: 0.72rem;
     border-radius: var(--r-sm);
     cursor: pointer;
     letter-spacing: 0.05em;
     transition: background 0.15s, border-color 0.15s, color 0.15s;
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
   }
 
   .settings-btn:hover {
@@ -1150,6 +1153,62 @@
     .tagline { display: none; }
   }
 
+  /* ── Theme toggle ── */
+  .theme-btn {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    color: var(--text-muted);
+    width: 32px;
+    height: 32px;
+    border-radius: var(--r-sm);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background 0.15s, border-color 0.15s, color 0.15s;
+    flex-shrink: 0;
+  }
+
+  .theme-btn:hover {
+    background: var(--surface);
+    border-color: var(--accent);
+    color: var(--accent);
+  }
+
+  /* ── Floating scroll-to-answer button ── */
+  .fab-answer {
+    position: fixed;
+    bottom: 1.8rem;
+    right: 1.8rem;
+    z-index: 100;
+    background: var(--accent);
+    color: #fff;
+    border: none;
+    border-radius: 24px;
+    padding: 0.6rem 1.1rem;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.72rem;
+    font-weight: 500;
+    letter-spacing: 0.05em;
+    cursor: pointer;
+    box-shadow: var(--shadow-lg);
+    display: flex;
+    align-items: center;
+    gap: 0.45rem;
+    opacity: 0;
+    transform: translateY(12px);
+    pointer-events: none;
+    transition: opacity 0.3s, transform 0.3s;
+  }
+
+  .fab-answer.visible {
+    opacity: 1;
+    transform: translateY(0);
+    pointer-events: auto;
+  }
+
+  .fab-answer:hover { opacity: 0.88; }
+
   @media (prefers-reduced-motion: reduce) {
     *, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
   }
@@ -1163,9 +1222,21 @@
     Ring
   </div>
   <div class="tagline">Tři hlasy, jedna otázka</div>
-  <div class="tagline" style="opacity:0.5">v0.2.0</div>
-  <button class="settings-btn" onclick="openSettings()">⚙ API klíče</button>
+  <div class="tagline" style="opacity:0.5">v0.3.0</div>
+  <button class="theme-btn" id="themeBtn" onclick="toggleTheme()" title="Přepnout téma" style="margin-left:auto">
+    <svg id="themeIconMoon" xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+    <svg id="themeIconSun" xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:none"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+  </button>
+  <button class="settings-btn" onclick="openSettings()">
+    <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+    API klíče
+  </button>
 </header>
+
+<!-- Floating scroll-to-answer button -->
+<button class="fab-answer" id="fabAnswer" onclick="scrollToAnswer()">
+  ↓ Správná odpověď
+</button>
 
 <!-- Password screen -->
 <div class="pw-screen" id="pwScreen" style="display:none">
@@ -1355,8 +1426,8 @@
     errEl.textContent = '';
     try {
       _sessionKeys = await decryptConfig(pw, ENCRYPTED_CONFIG);
+      sessionStorage.setItem('agora_session_keys', JSON.stringify(_sessionKeys));
       document.getElementById('pwScreen').style.display = 'none';
-      // Hide "API klíče" button — keys are baked in
       document.querySelector('.settings-btn').style.display = 'none';
       checkKeys();
     } catch {
@@ -1900,6 +1971,7 @@ Piš jako analytik, ne diplomat. Maximálně 250 slov. Bez markdown formátován
     document.querySelector('.query-area').classList.add('wide');
     document.getElementById('statusBar').innerHTML = '';
     document.getElementById('emptyState') && document.getElementById('emptyState').remove();
+    hideFab();
     setQueue('models');
 
     // Build grid
@@ -2176,7 +2248,12 @@ Piš jako analytik, ne diplomat. Maximálně 250 slov. Bez markdown formátován
       setQueue('answer');
       setTimeout(() => {
         const ac = document.getElementById('answerCard');
-        if (ac) { ac.style.opacity = '1'; ac.style.transform = 'translateY(0)'; }
+        if (ac) {
+          ac.style.opacity = '1';
+          ac.style.transform = 'translateY(0)';
+          fabObserver.observe(ac);
+          showFab();
+        }
       }, 300);
     } else {
       document.getElementById('debateCard')?.remove();
@@ -2215,9 +2292,60 @@ Piš jako analytik, ne diplomat. Maximálně 250 slov. Bez markdown formátován
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }
 
+  // --- Theme toggle ---
+  function applyTheme(theme) {
+    document.documentElement.setAttribute('data-theme', theme);
+    document.getElementById('themeIconMoon').style.display = theme === 'dark' ? 'none' : '';
+    document.getElementById('themeIconSun').style.display  = theme === 'dark' ? '' : 'none';
+    localStorage.setItem('agora_theme', theme);
+  }
+
+  function toggleTheme() {
+    const current = document.documentElement.getAttribute('data-theme') ||
+      (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+    applyTheme(current === 'dark' ? 'light' : 'dark');
+  }
+
+  // --- Floating answer button ---
+  function showFab() {
+    document.getElementById('fabAnswer').classList.add('visible');
+  }
+
+  function hideFab() {
+    document.getElementById('fabAnswer').classList.remove('visible');
+  }
+
+  function scrollToAnswer() {
+    document.getElementById('answerCard')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+
+  // Hide FAB when answer is in view
+  const fabObserver = new IntersectionObserver(entries => {
+    if (entries[0].isIntersecting) hideFab();
+    else {
+      if (document.getElementById('answerCard')) showFab();
+    }
+  }, { threshold: 0.2 });
+
   // --- Init ---
+  const savedTheme = localStorage.getItem('agora_theme') ||
+    (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+  applyTheme(savedTheme);
+
   if (ENCRYPTED_CONFIG) {
-    document.getElementById('pwScreen').style.display = 'flex';
+    const sessionKeys = sessionStorage.getItem('agora_session_keys');
+    if (sessionKeys) {
+      try {
+        _sessionKeys = JSON.parse(sessionKeys);
+        document.querySelector('.settings-btn').style.display = 'none';
+        checkKeys();
+      } catch {
+        sessionStorage.removeItem('agora_session_keys');
+        document.getElementById('pwScreen').style.display = 'flex';
+      }
+    } else {
+      document.getElementById('pwScreen').style.display = 'flex';
+    }
   } else {
     checkKeys();
   }
