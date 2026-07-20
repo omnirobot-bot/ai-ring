@@ -822,7 +822,7 @@
     align-items: baseline;
     gap: 0.55rem;
     padding: 0.32rem 0;
-    border-bottom: 1px solid var(--border);
+    border-bottom: 1px solid color-mix(in srgb, var(--border) 50%, transparent);
     font-size: 0.84rem;
     line-height: 1.4;
   }
@@ -1184,17 +1184,17 @@
     background: var(--accent);
     color: #fff;
     border: none;
-    border-radius: 24px;
-    padding: 0.6rem 1.1rem;
+    border-radius: 28px;
+    padding: 0.75rem 1.4rem;
     font-family: 'IBM Plex Mono', monospace;
-    font-size: 0.72rem;
+    font-size: 0.78rem;
     font-weight: 500;
     letter-spacing: 0.05em;
     cursor: pointer;
     box-shadow: var(--shadow-lg);
     display: flex;
     align-items: center;
-    gap: 0.45rem;
+    gap: 0.5rem;
     opacity: 0;
     transform: translateY(12px);
     pointer-events: none;
@@ -1235,7 +1235,8 @@
 
 <!-- Floating scroll-to-answer button -->
 <button class="fab-answer" id="fabAnswer" onclick="scrollToAnswer()">
-  ↓ Správná odpověď
+  <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><polyline points="19 12 12 19 5 12"/></svg>
+  Správná odpověď
 </button>
 
 <!-- Password screen -->
@@ -1836,22 +1837,24 @@ Piš jako analytik, ne diplomat. Maximálně 250 slov. Bez markdown formátován
 
     for (const line of lines) {
       if (/^#+ |^---+$/.test(line)) continue;
-      if (/^→ /.test(line) && section < 3) { section = 3; }
-      if (/ČÁST 2|VERDIKT/i.test(line)) { section = 2; continue; }
+      if (/ČÁST 1/i.test(line)) { section = 1; continue; }
+      if (/ČÁST 2|VERDIKT SOUDCE/i.test(line)) { section = 2; continue; }
       if (/ČÁST 3|SPRÁVN|ANSWER/i.test(line)) { section = 3; continue; }
 
       if (section === 3) {
-        // skip stray verdict-format lines that the LLM sometimes puts in ČÁST 3
         if (/^(BRAVE|OK|OBECNE|CHYBA|NEOVERITELNE)\|/i.test(line.replace(/^→\s*/, ''))) continue;
         answerLines.push(line);
         continue;
       }
       if (section === 2) { summaryLines.push(line); continue; }
 
+      // section 1 — parse pipe-delimited verdict lines (≥3 parts, claim may contain |)
       const parts = line.split('|');
-      if (parts.length === 3) {
-        const [status, model, claim] = parts.map(p => p.trim());
-        const [cls, label] = badgeMap[status.toUpperCase()] || ['noveritelne', '? ' + status];
+      if (parts.length >= 3 && badgeMap[parts[0].trim().toUpperCase()]) {
+        const status = parts[0].trim();
+        const model  = parts[1].trim();
+        const claim  = parts.slice(2).join('|').trim();
+        const [cls, label] = badgeMap[status.toUpperCase()];
         rows.push(`<div class="verdict-row">
           <span class="verdict-badge ${cls}">${label}</span>
           <span class="verdict-model">${model}</span>
