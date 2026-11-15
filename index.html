@@ -290,6 +290,20 @@
     padding: 2.2rem 2.5rem 5rem;
   }
 
+  main.centered {
+    min-height: calc(100vh - 58px);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding-top: 0;
+    padding-bottom: 0;
+  }
+
+  main.centered .query-area {
+    width: 100%;
+    max-width: 620px;
+  }
+
   /* ── Query area ── */
   .query-area {
     max-width: 620px;
@@ -1353,7 +1367,7 @@
   </div>
 </div>
 
-<main>
+<main id="mainEl" class="centered">
   <div class="key-warning" id="keyWarning">
     ⚠ Chybí API klíče — klikni na "API klíče" vpravo nahoře a zadej je.
   </div>
@@ -1394,12 +1408,7 @@
     </div>
   </div>
 
-  <div id="resultsArea">
-    <div class="empty-state" id="emptyState">
-      <div class="empty-quote">"Pravda má mnoho tváří."</div>
-      <div class="empty-text">Zadej otázku a porovnej perspektivy</div>
-    </div>
-  </div>
+  <div id="resultsArea"></div>
 
   <div class="history-section" id="historySection" style="display:none">
     <div class="history-title">Předchozí dotazy</div>
@@ -2042,8 +2051,8 @@ Piš jako analytik, ne diplomat. Maximálně 250 slov. Bez markdown formátován
     document.getElementById('askBtn').disabled = true;
     document.getElementById('askBtnText').textContent = 'Ptám se...';
     document.querySelector('.query-area').classList.add('wide');
+    document.getElementById('mainEl').classList.remove('centered');
     document.getElementById('statusBar').innerHTML = '';
-    document.getElementById('emptyState') && document.getElementById('emptyState').remove();
     hideFab();
     setQueue('models');
 
@@ -2367,6 +2376,7 @@ Piš jako analytik, ne diplomat. Maximálně 250 slov. Bez markdown formátován
   // --- History ---
   function renderHistory() {
     if (history.length === 0) return;
+    if (document.getElementById('mainEl').classList.contains('centered')) return;
     document.getElementById('historySection').style.display = 'block';
     const list = document.getElementById('historyList');
     list.innerHTML = history.slice(0, 8).map(h => `
